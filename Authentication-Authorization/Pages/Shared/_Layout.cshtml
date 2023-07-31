@@ -25,7 +25,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+                        @if (User.IsEligibleToViewPageEmpoyeePage())
+                        {
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Employee">Employee</a>
+                        </li>
+                        }
                     </ul>
+                </div>
+                <div class="mr-2">
+                    <partial name="_LoginStatusPartial" />
                 </div>
             </div>
         </nav>
@@ -36,7 +45,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted" style="position: fixed; bottom: 0; width: 100%; background-color: #f5f5f5; padding: 10px;">
         <div class="container">
             &copy; 2023 - Authentication_Authorization - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>

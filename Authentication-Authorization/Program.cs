@@ -27,14 +27,13 @@ builder.Services.AddAuthorization(authorizationOptions =>
     AddPolicy("MustBelongToAdministration"
     , policy =>
     {
-        policy.RequireClaim("AdministrationUser", "Admin");
+        policy.RequireClaim(Constants.AdministrationUserClaimName, "true");
     });
 });
 
 builder.Services.AddAuthorization(authorizationOptions =>
 {
-    authorizationOptions.
-    AddPolicy("MustBeAEmployee"
+    authorizationOptions.AddPolicy("MustBeAEmployee"
     , policy =>
     {
         // policy.RequireClaim("MustBeAEmployee", "true");

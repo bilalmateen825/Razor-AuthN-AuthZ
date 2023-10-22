@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddCors();
 
 #region Authentication
 
@@ -40,7 +41,7 @@ builder.Services.AddAuthorization(authorizationOptions =>
         policy.RequireClaim(Constants.EmployeeUserClaimName, "true");
         policy.AddRequirements(new EmployeeProbationRequirement(6));
     });
-    
+
     authorizationOptions.AddPolicy("AdminAccess", policy =>
     {
         policy.RequireClaim(Constants.AdministrationUserClaimName);
@@ -48,6 +49,17 @@ builder.Services.AddAuthorization(authorizationOptions =>
 });
 
 builder.Services.AddSingleton<IAuthorizationHandler, EmployeeProbationRequirementHandler>();
+builder.Services.AddHttpClient("WebAPIClient", options =>
+{
+    options.BaseAddress = new Uri("http://localhost:5236/");
+})
+  .ConfigurePrimaryHttpMessageHandler(() =>
+  {
+      var handler = new HttpClientHandler();
+      // Trust a self-signed certificate (for development only)
+      handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+      return handler;
+  });
 
 #endregion
 
@@ -62,7 +74,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+app.UseCors(builder =>
+{
+    builder.AllowAnyOrigin()
+           .AllowAnyHeader()
+           .AllowAnyMethod();
+});
+
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
